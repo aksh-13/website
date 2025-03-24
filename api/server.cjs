@@ -1,29 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { Server } = require('socket.io');
-const http = require('http');
-const cors = require('cors'); // Import the cors package
-const QRCode = require('qrcode'); // Import the QRCode library
+const QRCode = require('qrcode');
+const cors = require('cors');
 
 const app = express();
-const server = http.createServer(app);
 
 // Define allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:5173', // Local development
   'https://saukaevents.vercel.app' // Production frontend
 ];
-
-// Configure Socket.IO with CORS
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true,
-  },
-});
 
 // Use middleware
 app.use(bodyParser.json());
@@ -42,8 +29,8 @@ app.use(cors({
 mongoose.connect('mongodb+srv://shrotriakshaj:V0VykonS6z9on4Ho@orders.mlhw3.mongodb.net/orders?retryWrites=true&w=majority&ssl=true', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  connectTimeoutMS: 30000, // Increase connection timeout to 30 seconds
-  socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {
@@ -72,7 +59,7 @@ app.get('/generate_qr/:tableNumber', async (req, res) => {
 // Example order endpoint
 app.post('/api/orders', async (req, res) => {
   const { drinkTitle, drinkDescription, quantity, tableNumber } = req.body;
-  console.log('Order received:', req.body); // Log the received order
+  console.log('Order received:', req.body);
   try {
     const order = new mongoose.model('Order', {
       drinkTitle: String,
@@ -86,7 +73,6 @@ app.post('/api/orders', async (req, res) => {
       tableNumber,
     });
     await order.save();
-    io.emit('new-order', order);
     res.status(201).send(order);
   } catch (err) {
     console.error('Error saving order:', err.message);
@@ -94,12 +80,5 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
-// WebSocket connection
-io.on('connection', (socket) => {
-  console.log('A user connected');
-});
-
-// Start the server
-server.listen(process.env.PORT || 3000, () => {
-  console.log('Server is running');
-});
+// Export the app for Vercel
+module.exports = app;
