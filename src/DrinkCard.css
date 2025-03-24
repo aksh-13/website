@@ -1,0 +1,30 @@
+.drink-card {
+    background-color: white;
+    color: grey;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    width: 300px;
+    margin: 1rem;
+  }
+  
+  .drink-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  .order-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
+  .order-button:hover {
+    background-color: #0056b3;
+  }

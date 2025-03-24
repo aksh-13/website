@@ -1,0 +1,10 @@
+.notification-page {
+    padding: 2rem;
+    background-color: black;
+  }
+  
+  .order-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }

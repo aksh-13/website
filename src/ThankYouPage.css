@@ -1,0 +1,20 @@
+.thank-you-page {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .star-rating {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  
+  .star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #ccc;
+  }
+  
+  .star.selected {
+    color: #ff0;
+  }
