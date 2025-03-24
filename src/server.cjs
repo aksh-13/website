@@ -8,18 +8,37 @@ const QRCode = require('qrcode'); // Import the QRCode library
 
 const app = express();
 const server = http.createServer(app);
+
+// Define allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:5173', // Local development
+  'https://saukaevents.vercel.app' // Production frontend
+];
+
+// Configure Socket.IO with CORS
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // Allow requests from this origin
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
   },
 });
 
+// Use middleware
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true })); // Use the cors middleware
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
+// Connect to MongoDB
 mongoose.connect('mongodb+srv://shrotriakshaj:V0VykonS6z9on4Ho@orders.mlhw3.mongodb.net/orders?retryWrites=true&w=majority&ssl=true', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -37,7 +56,8 @@ app.get('/generate_qr/:tableNumber', async (req, res) => {
 
   try {
     // Define the URL for the table
-    const url = `https://saukaevents-jw3oicxbb-akshajs-projects-2701b487.vercel.app/order?table=${tableNumber}`;
+    const url = `https://saukaevents.vercel.app/order?table=${tableNumber}`;
+
     // Generate the QR code as a data URL
     const qrCodeDataUrl = await QRCode.toDataURL(url);
 
@@ -49,7 +69,7 @@ app.get('/generate_qr/:tableNumber', async (req, res) => {
   }
 });
 
-// Example order endpoint (optional, for testing)
+// Example order endpoint
 app.post('/api/orders', async (req, res) => {
   const { drinkTitle, drinkDescription, quantity, tableNumber } = req.body;
   console.log('Order received:', req.body); // Log the received order
@@ -80,6 +100,6 @@ io.on('connection', (socket) => {
 });
 
 // Start the server
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+server.listen(process.env.PORT || 3000, () => {
+  console.log('Server is running');
 });
