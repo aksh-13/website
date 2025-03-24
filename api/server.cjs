@@ -37,7 +37,6 @@ mongoose.connect('mongodb+srv://shrotriakshaj:V0VykonS6z9on4Ho@orders.mlhw3.mong
   console.error('Error connecting to MongoDB:', err.message);
 });
 
-// QR Code generation endpoint
 app.get('/generate_qr/:tableNumber', async (req, res) => {
   const { tableNumber } = req.params;
 
