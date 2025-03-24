@@ -38,7 +38,6 @@ app.get('/generate_qr/:tableNumber', async (req, res) => {
   try {
     // Define the URL for the table
     const url = `https://saukaevents-1eeh8h42k-akshajs-projects-2701b487.vercel.app/order?table=${tableNumber}`;
-
     // Generate the QR code as a data URL
     const qrCodeDataUrl = await QRCode.toDataURL(url);
 
